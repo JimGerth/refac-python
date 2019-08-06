@@ -7,36 +7,29 @@ class Movie:
 
     def __init__(self, title, price_code):
         self._title = title
-        self._price_code = price_code
+        self.set_price_code(price_code)
 
     def get_price_code(self):
-        return self._price_code
+        return self._price.get_price_code()
 
     def set_price_code(self, arg):
-        self._price_code = arg
+        if arg == self.REGULAR:
+            from RegularPrice import RegularPrice
+            self._price = RegularPrice()
+        elif arg == self.CHILDRENS:
+            from ChildrensPrice import ChildrensPrice
+            self._price = ChildrensPrice()
+        elif arg == self.NEW_RELEASE:
+            from NewReleasePrice import NewReleasePrice
+            self._price = NewReleasePrice()
+        else:
+            print('invalid price code!')
 
     def get_title(self):
         return self._title
 
     def get_charge(self, daysRented):
-        result = 0.0
-        if self.get_price_code() == Movie.REGULAR:
-            result += 2
-            if daysRented > 2:
-                result += (daysRented - 2) * 1.5
-
-        elif self.get_price_code() == Movie.NEW_RELEASE:
-            result += daysRented * 3
-
-        elif self.get_price_code() == Movie.CHILDRENS:
-            result += 1.5
-            if daysRented > 3:
-                result += (daysRented - 3) * 1.5
-
-        return result
+        return self._price.get_charge(daysRented)
 
     def get_frequent_renter_points(self, daysRented):
-        if self.get_price_code() == Movie.NEW_RELEASE and daysRented > 1:
-            return 2
-        else:
-            return 1
+        return self._price.get_frequent_renter_points(daysRented)
